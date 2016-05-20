@@ -3,8 +3,444 @@
 <head>
     <meta charset="UTF-8">
     <title>这是第一个拓扑图</title>
+    <script src="../jquery.min.js" type="text/javascript"></script>
+    <script src="../jcanvas.min.js" type="text/javascript"></script>
+    <style>
+        *{
+            margin: 0px;
+            padding: 0px;
+        }
+        #topology{
+            position:absolute;
+            width:800px;
+            height: 800px;
+            border:1px solid;
+            top:0%;
+            left:50%;
+            margin-left: -400px;
+            overflow: hidden;
+
+        }
+        #topology canvas{
+            background: #ffffcc;
+            position: absolute;
+            top:0;
+            left: 0;
+            /*transition: .5s all;*/
+        }
+
+        #control{
+            width:200px;
+            height:200px;
+            background: rgba(0,0,0,.1);
+            position: absolute;
+            right: 0px;
+            top:0;
+            border-radius: 50%;
+        }
+
+        #control a{
+            position: absolute;
+            width: 50px;
+            height:50px;
+            background: rgba(0,0,0,.4);
+            text-align: center;
+            line-height: 50px;
+        }
+        #control a:hover{
+            background: rgba(0,0,0,.6);
+        }
+
+
+        #control a:nth-child(1){
+            top:0;
+            left:75px;
+        }
+        #control a:nth-child(2){
+            bottom:0;
+            left:75px;
+        }
+        #control a:nth-child(3){
+            top:75px;
+            left:0px;
+        }
+        #control a:nth-child(4){
+            top:75px;
+            right:0px;
+        }
+        #control a:nth-child(5){
+            top:75px;
+            right:75px;
+        }
+
+
+        #legend{
+            width:200px;
+            height:50px;
+            background: rgba(0,0,0,.1);
+            position: absolute;
+            right: 240px;
+            top:0;
+        }
+        #legend span{
+            display: inline-block;
+            width:50px;
+            height:20px;
+            text-align: center;
+            line-height: 20px;
+        }
+    </style>
 </head>
 <body>
-
+    <div id="topology">
+        <canvas width="1600" height="1800"></canvas>
+        <div id="legend">
+        </div>
+        <div id="control">
+            <a href="javascript:;" data-left="0" data-top="-1">向上</a>
+            <a href="javascript:;" data-left="0" data-top="1">向下</a>
+            <a href="javascript:;" data-left="-1" data-top="0">向左</a>
+            <a href="javascript:;" data-left="1" data-top="0">向右</a>
+            <a href="javascript:;" data-left="0" data-top="0" data-scale="1">*1</a>
+        </div>
+    </div>
 </body>
+
+<script>
+    $(function(){  // 上面几个按钮的功能,对canvas的拖拽功能
+        var LEFT = 0;
+        var TOP = 0;
+        var $canvas = $("canvas");
+        $("#control").find("a").click(function(){
+            var scale = 1;
+            if(!(scale = $(this).data("scale"))){
+                TOP = TOP + $(this).data("top")*10;
+                LEFT = LEFT + $(this).data("left")*10;
+                $canvas.css({
+                    top  : TOP,
+                    left : LEFT
+                })
+            }else{
+                scale = scale == 1 ? 2 : (scale == 2 ? 0.5 : 1);
+                $canvas.css({
+                    transform : "scale("+scale+","+scale+")"
+                });
+                $(this).data("scale",scale).html("*"+scale);
+            }
+
+        });
+
+        $canvas.mousedown(function(e){
+            var s_x = $(this)[0].offsetLeft;
+            var s_y = $(this)[0].offsetTop;
+
+            var p_x = e.pageX;
+            var p_y = e.pageY;
+
+
+            function move(e){
+                var o_x = e.pageX;
+                var o_y = e.pageY;
+                TOP = (o_y-p_y)+s_y;
+                LEFT = (o_x-p_x)+s_x;
+                $canvas.css({
+                    top  : TOP,
+                    left : LEFT
+                })
+            }
+
+            $(document).on("mousemove",move);
+            $(document).mouseup(function(){
+                $(this).off("mousemove");
+            })
+
+        })
+    })
+    $(function(){  //画路由
+
+
+        //假设有三个组,每一台主机随机一个组或者是空的.
+        var hosts = [
+            {
+                name : "vm",
+                host : []
+            },{
+                name : "p1",
+                host : []
+            },{
+                name : "p2",
+                host : []
+            },{
+                name : "p3",
+                host : []
+            }
+        ];
+
+        var $topo = $("#topology").find("canvas");
+
+
+        //画所有
+        function drawAll(){
+            //画云外网
+            $topo.addLayer({
+                type: 'image',
+                source: '../image/topology-yun.png',
+                x: 100, y: 68,
+                click : function(){
+                    console.log("点击外网云");
+                }
+            }).drawLayers();
+
+            //画基础网络
+
+            $topo.addLayer({
+                type : "line",
+                strokeStyle: '#000',
+                strokeWidth: 5,
+                x1: 100, y1: 100,
+                x2: 100, y2: 490,
+                closed: true,
+                click : function(e){
+                    console.log(e)
+                }
+            }).addLayer({  //网基础网络上写简介
+                type : "text",
+                fillStyle: '#000',
+                strokeWidth: 2,
+                x: 80, y: 300,
+                fontSize: '12pt',
+                fontFamily: 'Arial',
+                text: '基础网络192.168.1.1',
+                fromCenter: true,
+                rotate: -90
+            });
+
+            //画基础网络上的小电脑
+            for(var i=0;i<5;i++){
+                var l = 80;
+                $topo.addLayer({
+                    type : 'image',
+                    source: '../image/billing_host.png',
+                    x: 150, y: 168+(i*l),
+                    width:50,height:40,
+                    click: function(){
+                        console.log("主网主机");
+                    }
+                }).addLayer({
+                    type : 'line',
+                    strokeStyle: '#000',
+                    strokeWidth: 5,
+                    x1: 125, y1: 163+(i*l),
+                    x2: 100, y2: 163+(i*l),
+                    closed: true,
+                });
+            }
+
+            //画子网
+
+            $topo.addLayer({
+                type : "line",
+                strokeStyle: '#000',
+                strokeWidth: 5,
+                x1: 100, y1: 120,
+                x2: 600, y2: 120,
+                closed: true,
+                click : function(e){
+
+                    console.log("子网干线");
+                }
+            })
+
+            function drawRouter(x,len){
+                //画路由器
+                $topo.addLayer({
+                    type : 'image',
+                    source: '../image/router.png',
+                    x: x, y: 180,
+                    width:50,height:50,
+                    click: function(){
+                        console.log("路由器");
+                    }
+                }).addLayer({
+                    type : "line",
+                    strokeStyle: '#000',
+                    strokeWidth: 5,
+                    x1: x, y1: 160,
+                    x2: x, y2: 120,
+                    closed: true
+                }).addLayer({
+                    type : "line",
+                    strokeStyle: '#000',
+                    strokeWidth: 5,
+                    x1: x, y1: 200,
+                    x2: x, y2: len*80+200,
+                    closed: true
+                });
+
+                //画路由器上的电脑
+                for(var i=0;i<len;i++){
+                    var l = 80;
+
+                    var deploy = {
+                        x : x+50,
+                        y : 250+(i*l),
+                        index : ~~(Math.random()*100000),
+                        name: "路由器主机"+i,
+                        ip : "192.168.0.1",
+                        vm : (Math.random()>0.5?"1":null),
+                        p1 : (Math.random()>0.5?"1":null),
+                        p2 : (Math.random()>0.5?"1":null),
+                        p3 : (Math.random()>0.5?"1":null)
+                    };
+
+                    for(var pi=0;pi<hosts.length;pi++){
+                        deploy[hosts[pi]["name"]] && hosts[pi]["host"].push(deploy);
+                    }
+
+                    $topo.addLayer({
+                        type : 'image',
+                        source: '../image/billing_host.png',
+                        x: deploy.x, y : deploy.y,
+                        width:50,height:40,
+                        deploy : deploy,
+                        click: function(e){
+                            console.log(e);
+                            console.log("路由器主机");
+                        },
+                        mouseover:function(e){
+                            console.log("mouseover",e);
+                            showHostDetail(e.deploy);
+                        },
+                        mouseout:function(e){
+                            console.log("mouseout",e);
+                        }
+                    }).addLayer({
+                        type : 'line',
+                        strokeStyle: '#000',
+                        strokeWidth: 5,
+                        x1: x+25, y1: 250+(i*l),
+                        x2: x, y2: 250+(i*l),
+                        closed: true,
+                    });
+                }
+            }
+
+            drawRouter(300,5);
+            drawRouter(500,4);
+
+
+            //鼠标移入道主机上时出现的隐形弹层
+
+            function showHostDetail(json){
+                $topo.addLayer({
+                    type : 'rect',
+                    strokeStyle: "rgba(255,255,255,0.6)",
+                    strokeWidth: 4,
+                    x: json.x, y: json.y,
+                    width: 200,
+                    height: 200,
+                    fromCenter: false,
+                    cornerRadius: 10
+                });
+            }
+
+        }
+
+
+        drawAll();
+
+        //生成图标
+        var $legend = $("#legend");
+        var colors = [];
+        for(var pj=0;pj<hosts.length;pj++){
+            var c = "#";
+            for(var i=0;i<6;i++){
+                c += parseInt(Math.random()*16).toString(16);
+            }
+            colors.push(c);
+            $span = $("<span>"+hosts[pj]["name"]+"</span>");
+            $span.css("background",c);
+            $legend.append($span);
+        }
+
+        console.log(colors,hosts);
+
+        //选中状态下的host
+
+        function drawhostsH(json){
+            $topo.addLayer({
+                type : 'image',
+                layer: true,
+                groups: ['hostBoxes'],
+                source: '../image/billing_host.png',
+                x: json.x, y : json.y,
+                width:50,height:40,
+            }).drawLayers();
+        }
+
+        //画个虚框
+        function drawhostBorder(x,y,w,h,color){
+            $topo.drawRect({
+                strokeStyle: color,
+                strokeWidth: 4,
+                x: x, y: y,
+                width: w,
+                height: h,
+                fromCenter: false,
+                cornerRadius: 10
+            });
+        }
+
+        function onHostHover(){
+            $topo.drawRect({
+                layer: true,
+                name: 'mask',
+                fillStyle: "rgba(255,255,255,.9)",
+                x: 0, y: 0,
+                width: 1600, height: 1800
+            });
+//            $topo.addLayerToGroup('mask', 'myBoxes').drawLayers();
+
+        }
+
+        function offHostHover(){
+            $topo.removeLayer('mask').drawLayers();
+            $topo.removeLayerGroup('hostBoxes');
+        }
+
+        //点击事件
+
+        $legend.on("mouseover","span",function(){
+            onHostHover();
+
+            var index = $(this).index();
+            var len = hosts[index]["host"].length;
+            var color = colors[index];
+
+            var x =99999 ,y = 9999,x2 = 0,y2 = 0;
+            for(var i=0;i<len;i++){
+                if(x > hosts[index]["host"][i].x){
+                    x = hosts[index]["host"][i].x ;
+                }
+                if(x2<hosts[index]["host"][i].x){
+                    x2 = hosts[index]["host"][i].x ;
+                }
+                if(y > hosts[index]["host"][i].y){
+                    y = hosts[index]["host"][i].y ;
+                }
+                if(y2 < hosts[index]["host"][i].y){
+                    y2 = hosts[index]["host"][i].y ;
+                }
+                drawhostsH(hosts[index]["host"][i]);
+            }
+//            console.log(x,y,x2,y2);
+            var ll = 50;
+            drawhostBorder(x-ll,y-ll,x2-x+ll*2,y2-y+ll*2,color);
+        })
+        $legend.on("mouseout","span",function(){
+            offHostHover();
+        })
+
+    })
+</script>
 </html>
