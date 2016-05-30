@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>这是第二个拓扑图</title>
+    <script src="../jquery.min.js" type="text/javascript"></script>
+    <script src="../jcanvas.min.js" type="text/javascript"></script>
+    <script src="../data.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/createCanvas.js"></script>
+    <style>
+        *{
+            margin: 0px;
+            padding: 0px;
+        }
+        #topology{
+            position:absolute;
+            width:800px;
+            height: 800px;
+            border:1px solid;
+            top:0%;
+            left:50%;
+            margin-left: -400px;
+            overflow: hidden;
+
+        }
+        #topology canvas{
+            /*background: #ffffcc;*/
+            background: #ffffff;
+            position: absolute;
+            top:0;
+            left: 0;
+            /*transition: .5s all;*/
+        }
+
+    </style>
+</head>
+<body>
+    <div id="topology"></div>
+</body>
+
+<script>
+    $(function(){  // 上面几个按钮的功能,对canvas的拖拽功能
+
+       // console.log(nets);      //网络
+       // console.log(hosts);     //主机
+
+        var $canvas = createCanvas($("#topology"),{ //创建个canvas
+            width : 1000,
+            height: 1000,
+            move : true
+        });
+
+        //生成一朵云
+        netCanvas($canvas,nets);
+
+        function netCanvas($c,nets){
+            var _x = config.yun.x,_y = config.yun.y,_w = config.yun.w,_h = config.yun.h; //云的位置
+
+
+            drawYun($c,_x,_y) // 生成云
+
+            drawBase($c,_x,_y,_w,_h,nets.base); //基础网路
+
+            var netOffset = drawRouter($c,_x,_y,_w,_h,nets.router); //画路由
+
+            var hostOffset = drawNets($c,_x,_y,_w,_h,netOffset,nets.subnet);  //画子网
+
+            drawHost($c,_x,_y,_w,_h,hostOffset,hosts);  //画主机
+
+        }
+
+
+
+    });
+
+
+</script>
+</html>
