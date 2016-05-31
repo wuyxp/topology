@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>这是第三个拓扑图</title>
+    <script src="../jquery.min.js" type="text/javascript"></script>
+    <!--<script src="../jcanvas.min.js" type="text/javascript"></script>-->
+    <script src="../jcanvas.js" type="text/javascript"></script>
+    <script src="../data.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/createCanvas.js"></script>
+    <style>
+        *{
+            margin: 0px;
+            padding: 0px;
+        }
+        #topology{
+            position:absolute;
+            width:800px;
+            height: 800px;
+            border:1px solid;
+            top:0%;
+            left:50%;
+            margin-left: -400px;
+            overflow: hidden;
+
+        }
+        #topology canvas{
+            /*background: #ffffcc;*/
+            background: #ffffff;
+            position: absolute;
+            top:0;
+            left: 0;
+            /*transition: .5s all;*/
+        }
+
+    </style>
+</head>
+<body>
+    <div id="topology"></div>
+</body>
+
+<script>
+    $(function(){  // 上面几个按钮的功能,对canvas的拖拽功能
+
+       // console.log(nets);      //网络
+       // console.log(hosts);     //主机
+
+        var $canvas = createCanvas($("#topology"),{ //创建个canvas
+            width : config.width*config.multiple,
+            height: config.height*config.multiple,
+            move : true
+        });
+        $canvas.css({
+            width:config.width+'px',
+            height:config.height+'px'
+        })
+
+        //生成一朵云
+        netCanvas($canvas,nets);
+
+        function netCanvas($c,nets){
+            var _x = config.yun.x,_y = config.yun.y,_w = config.yun.w,_h = config.yun.h; //云的位置
+
+
+            drawYun($c,_x,_y) // 生成云
+
+            drawBase($c,_x,_y,_w,_h,nets.base); //基础网路
+
+            var netOffset = drawRouter($c,_x,_y,_w,_h,nets.router,{
+                mouseover : showRouter,
+                mouseout : hideTip
+            }); //画路由
+
+            var hostOffset = drawNets($c,_x,_y,_w,_h,netOffset,nets.subnet);  //画子网
+
+            drawHost($c,_x,_y,_w,_h,hostOffset,hosts);  //画主机
+
+
+
+        }
+
+        function showRouter($c,x,y,v){
+            console.log(v);
+            console.log(x,y);
+            var textArr = [];
+
+            //这里处理一些数据
+            for(var i in v){
+                var data = {};
+                data.key = i;
+                data.value = v[i];
+                textArr.push(data);
+            }
+            showTip($c,x,y,textArr);
+        }
+
+        function showTip($c,x,y,textA){
+            var len = textA.length;
+            $c.drawRect({
+                layer: true,
+                fillStyle:config.tip.color,
+                x : (x-config.tip.w/2+config.tip.l)*config.multiple,
+                y : (y+config.tip.t)*config.multiple,
+                width:config.tip.w*config.multiple,
+                height:(len*(config.tip.lineHeigth)+config.tip.fontSize)*config.multiple || config.tip.h*config.multiple,
+                shadowColor: config.tip.shadowColor,
+                shadowBlur: config.tip.shadowBlur*config.multiple,
+                shadowX: config.tip.shadowX*config.multiple,
+                shadowY: config.tip.shadowY*config.multiple,
+                fromCenter: false,
+                groups: ['myBoxes'],
+                cornerRadius: config.tip.cornerRadius*config.multiple
+            }).drawRect({
+                layer: true,
+                fillStyle:config.tip.color,
+                x : (x+config.tip.l)*config.multiple,
+                y : (y+config.tip.t)*config.multiple,
+                width:15*config.multiple,
+                height:15*config.multiple,
+                rotate: -45,
+                groups: ['myBoxes']
+            });
+
+            for(var i=0;i<len;i++){
+                $c.addLayer({  //网基础网络上写简介
+                    type : "text",
+                    fillStyle: '#000',
+                    x:(x-config.tip.w/2+config.tip.l+20)*config.multiple,
+                    y: (y+config.tip.t+i*config.tip.lineHeigth)*config.multiple,
+                    fontSize: config.tip.fontSize*config.multiple+'px',
+                    fontFamily: 'Arial',
+                    baseline:"top",
+                    text:textA[i].key+":"+textA[i].value,
+                    fromCenter: false,
+                    groups: ['myBoxes']
+                });
+            }
+        }
+
+        function hideTip($c){
+            console.log("hidetip");
+//            $c.removeLayer('box').drawLayers();
+            $c.removeLayerGroup('myBoxes');
+        }
+
+    });
+
+
+</script>
+</html>
