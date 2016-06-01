@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>这是第四个拓扑图</title>
+    <script src="../jquery.min.js" type="text/javascript"></script>
+    <!--<script src="../jcanvas.min.js" type="text/javascript"></script>-->
+    <script src="../jcanvas.js" type="text/javascript"></script>
+    <script src="../data.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/createCanvas.js"></script>
+    <style>
+        *{
+            margin: 0px;
+            padding: 0px;
+        }
+        #topology{
+            position:absolute;
+            width:800px;
+            height: 800px;
+            border:1px solid;
+            top:20px;
+            left:50%;
+            margin-left: -400px;
+            overflow: hidden;
+
+        }
+        #topology canvas{
+            /*background: #ffffcc;*/
+            background: #ffffff;
+            position: absolute;
+            top:0;
+            left: 0;
+            /*transition: .5s all;*/
+        }
+
+        #hostbox{
+            text-align: center;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="hostbox">
+        <label for="showhost">展示主机</label>
+        <input type="radio" id="showhost" name="host" value="showhost" />
+        <label for="hidehost">隐藏主机</label>
+        <input type="radio" id="hidehost" name="host" value="hidehost" checked="checked" />
+    </div>
+    <div id="topology"></div>
+</body>
+
+<script>
+    $(function(){  // 上面几个按钮的功能,对canvas的拖拽功能
+
+
+
+        var $canvas = createCanvas($("#topology"),{ //创建个canvas
+            move : true,
+            showHost : false
+        });
+
+        //生成一朵云
+        netCanvas($canvas,nets);
+
+        function netCanvas($c,nets){
+            var _x = config.yun.x,_y = config.yun.y,_w = config.yun.w,_h = config.yun.h; //云的位置
+
+
+            drawYun($c,_x,_y) // 生成云
+
+            drawBase($c,_x,_y,_w,_h,nets.base); //基础网路
+
+            var netOffset = drawRouter($c,_x,_y,_w,_h,nets.router,{
+                mouseover : showRouterTip,
+                mouseout : hideTip,
+                click : function(){
+                    alert("此处点击路由跳转页面");
+                }
+            }); //画路由
+
+            var hostOffset = drawNets($c,_x,_y,_w,_h,netOffset,nets.subnet, {
+                mouseover: showNetTip,
+                mouseout: hideTip,
+                click: function () {
+                    alert("此处点击子网跳转对应页面跳转页面");
+                }
+            });  //画子网
+
+            function showHostfun(){
+                drawHost($c,_x,_y,_w,_h,hostOffset,hosts,{
+                    mouseover : showHostTip,
+                    mouseout : hideTip,
+                    click : function(){
+                        alert("此处点击主机跳转对应页面跳转页面");
+                    }
+                });  //画主机
+            }
+
+            if($c.showHost){
+
+                showHostfun()
+            }
+
+
+
+            //选择展示项的单选按钮
+            $("[name=host]").change(function(){
+                var val = $(this).val();
+                if(val == 'hidehost'){
+                    $c.removeLayerGroup('hostLayer').drawLayers();
+
+                }else if(val == 'showhost'){
+                   // $c.removeLayerGroup('hideHostLayer').drawLayers();
+                    showHostfun()
+                }
+            });
+
+
+        }
+
+        //在路由上展示的数据
+
+        function showRouterTip($c,x,y,v){
+            var textArr = [];
+
+            //这里处理一些数据
+            for(var i in v){
+                var data = {};
+                data.key = i;
+                data.value = v[i];
+                textArr.push(data);
+            }
+
+            $c.css("cursor","pointer");
+            showTip($c,x,y,textArr);
+        }
+
+        //在主机上展示的数据
+
+        function showHostTip($c,x,y,v){
+            var textArr = [];
+            $c.css("cursor","pointer");
+            //这里处理一些数据
+            for(var i in v){
+                var data = {};
+                data.key = i;
+                data.value = v[i];
+                textArr.push(data);
+            }
+            showTip($c,x,y,textArr);
+        }
+
+
+        //在子网上展示的数据
+
+        function showNetTip($c,x,y,v){
+            var textArr = [];
+            $c.css("cursor","pointer");
+            //这里处理一些数据
+            for(var i in v){
+                var data = {};
+                data.key = i;
+                data.value = v[i];
+                textArr.push(data);
+            }
+            showTip($c,x,y,textArr);
+        }
+
+
+    });
+
+
+</script>
+</html>

@@ -41,6 +41,14 @@ var nets = {
     ],
     'subnet' : [
         {
+            'net_id'    :   'base-net',
+            'net_name'  :   'base-name-net',
+            'net_ip'    :   '192.168.2.1',
+            'net_hostN' :   32,
+            'type'      :   'public',
+            'router_id' :   'base'
+        },
+        {
             'net_id'    :   'net-001',
             'net_name'  :   'net-name001',
             'net_ip'    :   '192.168.2.1',
@@ -81,7 +89,16 @@ var hosts = [
         'ip'            :   '192.16.1.2',
         'mirror'        :   'Windows Server 2008 R2 Datacenter 简体中文 未激活',
         'create_date'   :   1464135759,
-        'net_id'        :   'net-001'
+        'net_id'        :   'base-net'
+    },{
+        'id'            :   'host-zasgt25a',
+        'name'          :   '开发1',
+        'status'        :   '运行中',
+        'net'           :   'www',
+        'ip'            :   '192.16.1.2',
+        'mirror'        :   'Windows Server 2008 R2 Datacenter 简体中文',
+        'create_date'   :   1464135759,
+        'net_id'        :   'base-net'
     },{
         'id'            :   'host-zasgt25a',
         'name'          :   '开发1',
@@ -89,6 +106,25 @@ var hosts = [
         'net'           :   'www',
         'ip'            :   '192.16.1.2',
         'mirror'        :   'Windows Server 2008 R2 Datacenter 简体中文 未激活',
+        'create_date'   :   1464135759,
+        'net_id'        :   'base-net'
+    },
+    {
+        'id'            :   'host-zasgt25a',
+        'name'          :   '开发1',
+        'status'        :   '运行中',
+        'net'           :   'www',
+        'ip'            :   '192.16.1.2',
+        'mirror'        :   'Windows Server 2008 R2 Datacenter 简体中文 未激活',
+        'create_date'   :   1464135759,
+        'net_id'        :   'net-001'
+    },{
+        'id'            :   'host-zasgt25a',
+        'name'          :   '开发1',
+        'status'        :   '运行中',
+        'net'           :   'www',
+        'ip'            :   '192.16.1.2',
+        'mirror'        :   'Windows Server 2008 R2 Datacenter 简体中文',
         'create_date'   :   1464135759,
         'net_id'        :   'net-001'
     },{
@@ -106,8 +142,8 @@ var hosts = [
         'status'        :   '运行中',
         'net'           :   'www',
         'ip'            :   '192.16.1.2',
-        'mirror'        :   'Windows Server 2008 R2 Datacenter 简体中文 未激活',
-        'create_date'   :   1464135759,
+        'mirror'        :   'Windows',
+        'create_date'   :   146,
         'net_id'        :   'net-002'
     },{
         'id'            :   'host-zasgt25a',
