@@ -57,35 +57,35 @@ var nets = {
             'type'      :   'public',
             'router_id' :   'rtr-001'
         },{
-            'net_id'    :   'net-002',
+            'net_id'    :   'net-003',
             'net_name'  :   '直接连入外网子网02',
             'net_ip'    :   '192.168.2.1',
             'net_hostN' :   10,
             'type'      :   'public',
             'router_id' :   null
         },{
-            'net_id'    :   'net-003',
+            'net_id'    :   'net-004',
             'net_name'  :   '连入路由器rtr-002子网01',
             'net_ip'    :   '192.168.2.1',
             'net_hostN' :   22,
             'type'      :   'public',
             'router_id' :   'rtr-002'
         },{
-            'net_id'    :   'net-002',
+            'net_id'    :   'net-005',
             'net_name'  :   '直接连入外网子网03',
             'net_ip'    :   '192.168.2.1',
             'net_hostN' :   10,
             'type'      :   'public',
             'router_id' :   null
         },{
-            'net_id'    :   'net-003',
+            'net_id'    :   'net-006',
             'net_name'  :   '连入路由器rtr-002子网02',
             'net_ip'    :   '192.168.2.1',
             'net_hostN' :   22,
             'type'      :   'public',
             'router_id' :   'rtr-002'
         },{
-            'net_id'    :   'net-004',
+            'net_id'    :   'net-007',
             'net_name'  :   '连入路由器rtr-003子网01',
             'net_ip'    :   '192.168.2.1',
             'net_hostN' :   6,
@@ -104,7 +104,7 @@ var hosts = [
         'ip'            :   '192.16.1.2',
         'mirror'        :   'Windows Server 2008 R2 Datacenter 简体中文 未激活',
         'create_date'   :   1464135759,
-        'net_id'        :   'base-net'
+        'net_id'        :   ['base-net','net-002']
     },{
         'id'            :   'host-zasgt25a',
         'name'          :   '开发1',
@@ -113,7 +113,7 @@ var hosts = [
         'ip'            :   '192.16.1.2',
         'mirror'        :   'Windows Server 2008 R2 Datacenter 简体中文',
         'create_date'   :   1464135759,
-        'net_id'        :   'base-net'
+        'net_id'        :   ['base-net','net-001','net-002']
     },{
         'id'            :   'host-zasgt25a',
         'name'          :   '开发1',
@@ -122,7 +122,7 @@ var hosts = [
         'ip'            :   '192.16.1.2',
         'mirror'        :   'Windows Server 2008 R2 Datacenter 简体中文 未激活',
         'create_date'   :   1464135759,
-        'net_id'        :   'base-net'
+        'net_id'        :   ['base-net','net-001']
     },
     {
         'id'            :   'host-zasgt25a',
@@ -132,7 +132,7 @@ var hosts = [
         'ip'            :   '192.16.1.2',
         'mirror'        :   'Windows Server 2008 R2 Datacenter 简体中文 未激活',
         'create_date'   :   1464135759,
-        'net_id'        :   'net-001'
+        'net_id'        :   ['net-001']
     },{
         'id'            :   'host-zasgt25a',
         'name'          :   '开发1',
@@ -141,7 +141,7 @@ var hosts = [
         'ip'            :   '192.16.1.2',
         'mirror'        :   'Windows Server 2008 R2 Datacenter 简体中文',
         'create_date'   :   1464135759,
-        'net_id'        :   'net-001'
+        'net_id'        :   ['net-001']
     },{
         'id'            :   'host-zasgt25a',
         'name'          :   '开发1',
@@ -150,7 +150,7 @@ var hosts = [
         'ip'            :   '192.16.1.2',
         'mirror'        :   'Windows Server 2008 R2 Datacenter 简体中文 未激活',
         'create_date'   :   1464135759,
-        'net_id'        :   'net-002'
+        'net_id'        :   ['net-002']
     },{
         'id'            :   'host-zasgt25a',
         'name'          :   '开发1',
@@ -159,7 +159,7 @@ var hosts = [
         'ip'            :   '192.16.1.2',
         'mirror'        :   'Windows',
         'create_date'   :   146,
-        'net_id'        :   'net-002'
+        'net_id'        :   ['net-002']
     },{
         'id'            :   'host-zasgt25a',
         'name'          :   '开发1',
@@ -168,7 +168,7 @@ var hosts = [
         'ip'            :   '192.16.1.2',
         'mirror'        :   'Windows Server 2008 R2 Datacenter 简体中文 未激活',
         'create_date'   :   1464135759,
-        'net_id'        :   'net-002'
+        'net_id'        :   ['net-002']
     },{
         'id'            :   'host-zasgt25a',
         'name'          :   '开发1',
@@ -177,7 +177,7 @@ var hosts = [
         'ip'            :   '192.16.1.2',
         'mirror'        :   'Windows Server 2008 R2 Datacenter 简体中文 未激活',
         'create_date'   :   1464135759,
-        'net_id'        :   'net-003'
+        'net_id'        :   ['net-003']
     },{
         'id'            :   'host-zasgt25a',
         'name'          :   '开发1',
@@ -186,7 +186,7 @@ var hosts = [
         'ip'            :   '192.16.1.2',
         'mirror'        :   'Windows Server 2008 R2 Datacenter 简体中文 未激活',
         'create_date'   :   1464135759,
-        'net_id'        :   'net-003'
+        'net_id'        :   ['net-003']
     },{
         'id'            :   'host-zasgt25a',
         'name'          :   '开发1',
@@ -195,7 +195,7 @@ var hosts = [
         'ip'            :   '192.16.1.2',
         'mirror'        :   'Windows Server 2008 R2 Datacenter 简体中文 未激活',
         'create_date'   :   1464135759,
-        'net_id'        :   'net-003'
+        'net_id'        :   ['net-003']
     },{
         'id'            :   'host-zasgt25a',
         'name'          :   '开发1',
@@ -204,7 +204,7 @@ var hosts = [
         'ip'            :   '192.16.1.2',
         'mirror'        :   'Windows Server 2008 R2 Datacenter 简体中文 未激活',
         'create_date'   :   1464135759,
-        'net_id'        :   'net-004'
+        'net_id'        :   ['net-004']
     },{
         'id'            :   'host-zasgt25a',
         'name'          :   '开发1',
@@ -213,7 +213,7 @@ var hosts = [
         'ip'            :   '192.16.1.2',
         'mirror'        :   'Windows Server 2008 R2 Datacenter 简体中文 未激活',
         'create_date'   :   1464135759,
-        'net_id'        :   'net-004'
+        'net_id'        :   ['net-004']
     },{
         'id'            :   'host-zasgt25a',
         'name'          :   '开发1',
@@ -222,7 +222,7 @@ var hosts = [
         'ip'            :   '192.16.1.2',
         'mirror'        :   'Windows Server 2008 R2 Datacenter 简体中文 未激活',
         'create_date'   :   1464135759,
-        'net_id'        :   'net-004'
+        'net_id'        :   ['net-004']
     },{
         'id'            :   'host-zasgt25a',
         'name'          :   '开发1',
@@ -231,7 +231,7 @@ var hosts = [
         'ip'            :   '192.16.1.2',
         'mirror'        :   'Windows Server 2008 R2 Datacenter 简体中文 未激活',
         'create_date'   :   1464135759,
-        'net_id'        :   'net-004'
+        'net_id'        :   ['net-004']
     }
 ]
 
